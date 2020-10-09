@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+	
+	<select name="countries" id="countries"></select>
+	<button onclick="onSubmit()">Submit</button>
+	<div id="result"> </div>
+
+</body>
+<script type="text/javascript">
+	$.get("https://api.covid19api.com/countries").then( data => {
+		console.log(data)
+		document.getElementById("countries").innerHTML = ""
+		for(let i = 0;i<data.length; i++) {
+			document.getElementById("countries").innerHTML += "<option value=" + data[i].Slug + ">" + data[i].Country + "</option>"
+		}
+	})
+
+	function onSubmit() {
+		const slug = document.getElementById("countries").value;
+		console.log(slug);
+		$.get("https://api.covid19api.com/total/country/" + slug).then(data => {
+			console.log(data);
+			let latestData = data[data.length - 1];
+			let Confirmed = latestData.Confirmed;
+			let Deaths = latestData.Deaths;
+			let Recovered = latestData.Recovered;
+			let Active = latestData.Active;
+
+			document.getElementById("result").innerHTML = "<h2> Latest Data </h2> <br> " + 
+			"<h3> Confirmed: " + Confirmed + " </h3>" + 
+			"<h3> Deaths: " + Deaths + " </h3>" + 
+			"<h3> Recovered: " + Recovered + " </h3>" +
+			"<h3> Active: " + Active + " </h3>";
+
+		})
+	}
+
+</script>	
+</html>
